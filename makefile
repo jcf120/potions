@@ -20,7 +20,7 @@ $(OBJ_DIR)Instructor.o: $(SRC_DIR)Instructor.cpp $(SRC_DIR)Instructor.h \
 	$(CC) $(CFLAGS) $(SRC_DIR)Instructor.cpp -o $(OBJ_DIR)Instructor.o
 
 $(OBJ_DIR)Alchemist.o: $(SRC_DIR)Alchemist.cpp $(SRC_DIR)Alchemist.h \
-					   $(SRC_DIR)WeightedRandomizedSet.h \
+					   $(SRC_DIR)WeightedRandomizedStack.h \
 					   $(OBJ_DIR)Ingredient.o $(OBJ_DIR)StatusEffect.o
 	$(CC) $(CFLAGS) $(SRC_DIR)Alchemist.cpp -o $(OBJ_DIR)Alchemist.o
 
@@ -33,7 +33,7 @@ $(OBJ_DIR)Ingredient.o: $(SRC_DIR)Ingredient.cpp $(SRC_DIR)Ingredient.h  \
 	$(CC) $(CFLAGS) $(SRC_DIR)Ingredient.cpp -o $(OBJ_DIR)Ingredient.o
 
 $(OBJ_DIR)StatusEffect.o: $(SRC_DIR)StatusEffect.cpp $(SRC_DIR)StatusEffect.h \
-						  $(SRC_DIR)WeightedRandomizedSet.h
+						  $(SRC_DIR)WeightedRandomizedStack.h
 	$(CC) $(CFLAGS) $(SRC_DIR)StatusEffect.cpp -o $(OBJ_DIR)StatusEffect.o
 
 clean:

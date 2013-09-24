@@ -9,7 +9,7 @@
 #include "Alchemist.h"
 #include <stdexcept>
 #include <algorithm>
-#include "WeightedRandomizedSet.h"
+#include "WeightedRandomizedStack.h"
 
 using namespace std;
 
@@ -47,18 +47,18 @@ const Ingredient Alchemist::discoverNewIngredient()
 // varieties are determined by the rarities of those that have been 'discovered'
 void Alchemist::forage(const int count)
 {
-	// Generate a WeightedRandomizedSet from the discovered ingredients. This
+	// Generate a WeightedRandomizedStack from the discovered ingredients. This
 	// represents the garden from which ingredients are foraged.
-	WeightedRandomizedSet<Ingredient> garden;
+	WeightedRandomizedStack<Ingredient> garden;
 	
 	// Fills the garden with potential ingredients and info about rarity.
 	for (auto& p : this->ingredientStore) // p is an Ingredient-int pair
-		garden.add(p.first, 1.0 / p.first.calculateRarity());
+		garden.push(p.first, 1.0 / p.first.calculateRarity());
 	
 	// Fetch ingredients from the garden the specified number of times.
 	// Increment the stock of each ingredient retrieved.
 	for (int i = 0; i < count; i++)
-		this->ingredientStore[garden.retrieve()]++;
+		this->ingredientStore[garden.peak()]++;
 	
 	// Note the increase in stock
 	this->totalIngredientsRemaining += count;

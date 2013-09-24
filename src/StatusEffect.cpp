@@ -15,8 +15,8 @@ using namespace std;
 // Initialize static members
 const StatusEffect StatusEffect::nullValue = StatusEffect();
 unsigned int StatusEffect::sNextId = 1; // 0 is reserved for invalid effects.
-WeightedRandomizedSet<StatusEffect> StatusEffect::sExistingEffects =
-	WeightedRandomizedSet<StatusEffect>();
+WeightedRandomizedStack<StatusEffect> StatusEffect::sExistingEffects =
+	WeightedRandomizedStack<StatusEffect>();
 
 //------------------------------------------------------------------------------
 // Default constructor - only used by containers and represents an invalid.
@@ -84,7 +84,7 @@ StatusEffect StatusEffect::newStatusEffect(const double rarity)
 	const StatusEffect statusEffect = StatusEffect(sNextId++, rarity);
 	
 	// Store it in the weighted set, with rarity's reciprocal as probability.
-	sExistingEffects.add(statusEffect, 1.0 / rarity);
+	sExistingEffects.push(statusEffect, 1.0 / rarity);
 	
 	// Return the new effect
 	return statusEffect;
@@ -98,7 +98,7 @@ const StatusEffect& StatusEffect::randomStatusEffect()
 	if (sExistingEffects.isEmpty())
 		logic_error("No StatusEffects exist from which to select.");
 	
-	return sExistingEffects.retrieve();
+	return sExistingEffects.peak();
 }
 
 //------------------------------------------------------------------------------

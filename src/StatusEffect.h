@@ -14,7 +14,7 @@
 
 #pragma once
 #include <vector>
-#include "WeightedRandomizedSet.h"
+#include "WeightedRandomizedStack.h"
 
 
 class StatusEffect
@@ -72,7 +72,7 @@ private:
 	static unsigned int sNextId;
 	
 	// All existing status effect in a weighted set.
-	static WeightedRandomizedSet<StatusEffect> sExistingEffects;
+	static WeightedRandomizedStack<StatusEffect> sExistingEffects;
 
 };
 
