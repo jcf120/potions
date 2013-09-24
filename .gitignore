@@ -1,0 +1,5 @@
+# Ignore text files except effects.txt
+*.txt
+!effects.txt
+# Ignore executable
+*.exe
