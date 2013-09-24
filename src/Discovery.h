@@ -14,20 +14,20 @@
 #include "Ingredient.h"
 #include "StatusEffect.h"
 
-// The maximum possible number of discoveries from combining 3 ingredients is:
-// 3 (ingredients) * 4 (effects) / 2 (number needed for a match) = 6.
-#define MAX_FINDINGS 6
-
 class Discovery
 {
-	// The number of findings
-	int count;
-	// Storing the findings
-	Ingredient ingredients[MAX_FINDINGS];
-	StatusEffect effects[MAX_FINDINGS];
+	struct Finding
+	{
+		Ingredient ingredient;
+		StatusEffect effect;
+		
+		Finding(const Ingredient& i, const StatusEffect& e) :
+			ingredient(i), effect(e) {}
+	};
+
+	std::vector<Finding> findings;
 	
 public:
-	// Default Constructor - initialises the container empty.
 	Discovery();
 	
 	// The increase in inventory value from combining the ingredients.
