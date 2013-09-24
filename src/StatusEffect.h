@@ -19,20 +19,34 @@
 
 class StatusEffect
 {
+	// Used for sorting and checking that an effect is unique.
+	unsigned int id;
+	
+	// Determines resulting potion's value and the frequency at which the
+	// status effect occurs in ingredients
+	double rarity;
+	
+	// Only used by static method - newStatusEffect(const double rarity)
+	StatusEffect(const unsigned int id, const double effectRarity);
+	
 public:
+	StatusEffect(); // Only used by containers - uses invalid id 0.
 	
-	// Default construct initializes with invalid id 0.
-	StatusEffect();
-	static const StatusEffect nullValue;
-	
-	// Copy constructor
 	StatusEffect(const StatusEffect& rhs);
-	
-	// Assignment operator
 	StatusEffect& operator= (const StatusEffect& rhs);
 	
-	// Rarity accessor - readonly.
-	double rarity() const;
+	double getRarity() const;
+	
+	// Comparison operator using StatusEffects' ids
+	bool operator==(const StatusEffect& rhs) const;
+	bool operator!=(const StatusEffect& rhs) const;
+	
+	// Relational operator using StatusEffects' ids
+	bool operator<(const StatusEffect& rhs) const;
+
+//------------------------------------------------------------------------------
+//                              Static methods
+//------------------------------------------------------------------------------
 
 	// Returns a StatusEffect with a unique id
 	static StatusEffect newStatusEffect(const double rarity);
@@ -47,27 +61,18 @@ public:
 	// Removes all existing StatusEffects
 	static void clearAll();
 	
-	// Comparison operator using StatusEffects' ids
-	bool operator==(const StatusEffect& rhs) const;
-	bool operator!=(const StatusEffect& rhs) const;
+//------------------------------------------------------------------------------
+//                               Static members
+//------------------------------------------------------------------------------
 	
-	// Relational operator using StatusEffects' ids
-	bool operator<(const StatusEffect& rhs) const;
-
+	static const StatusEffect nullValue; // id = 0
+	
 private:
-	StatusEffect(const unsigned int id, const double effectRarity);
-	
-	// Used for sorting and checking that an effect is unique.
-	unsigned int _id;
-	
-	// Determines resulting potion's value and the frequency at which the
-	// status effect occurs in ingredients
-	double _rarity;
-	
 	// Incremented for assigning unique ids
-	static unsigned int s_nextId;
+	static unsigned int sNextId;
 	
 	// All existing status effect in a weighted set.
-	static WeightedRandomizedSet<StatusEffect> s_existingEffects;
+	static WeightedRandomizedSet<StatusEffect> sExistingEffects;
+
 };
 

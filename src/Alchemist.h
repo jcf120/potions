@@ -36,14 +36,30 @@
 
 class Alchemist
 {
-public:
-	// Returns the combined value of all the brewed potions
-	double inventoryValue() const;
-	
-	// Returns the number of potions with no value
-	int worthlessPotionCount();
+//------------------------------------------------------------------------------
+//                             Private members
+//------------------------------------------------------------------------------
 
-#pragma mark Setup
+	// The combined value of all the brewed potions.
+	double inventoryValue;
+	
+	// Keep a count of total ingredients in the store.
+	int totalIngredientsRemaining;
+	
+	// Keep a count of combinations that gained nothing.
+	int worthlessPotionCount;
+
+	// Holds the quantity of each ingredient.
+	std::map<Ingredient, unsigned int> ingredientStore;
+
+	// Sorts ingredients by their discovered effects
+	std::map<StatusEffect, std::vector<Ingredient> > effectsReference;
+	
+//------------------------------------------------------------------------------
+//                                 Setup
+//------------------------------------------------------------------------------
+	
+public:
 	
 	// Initializes an alchemist with no discoveries or stock.
 	Alchemist();
@@ -55,10 +71,19 @@ public:
 	// Refills the alchemist's stores by the specified amount with ingredients
 	// according to their rarities.
 	void forage(const int count);
+	
+//------------------------------------------------------------------------------
+//                            Member accessors
+//------------------------------------------------------------------------------
 
-#pragma mark -
+	double getInventoryValue() const;
+	int getWorthlessPotionCount() const;
+	int getTotalIngredientsRemaining() const;
 
-#pragma mark Ingredient Stock Queries
+	
+//------------------------------------------------------------------------------
+//                    Effect & Ingredient Stock Queries
+//------------------------------------------------------------------------------
 
 	// Returns all known stocked and unstocked ingredients.
 	std::vector<Ingredient> allKnownIngredients() const;
@@ -68,9 +93,6 @@ public:
 
 	// Returns the stock count for the specified ingredient.
 	int countOfIngredient(const Ingredient& ingredient) const;
-
-	// Returns the total number of ingredients remaining.
-	int totalIngredientsRemaining() const;
 	
 	// Returns the number of remaining of ingredient varieties still in stock.
 	int calculateVarietiesInStock() const;
@@ -80,18 +102,20 @@ public:
 
 	// Returns the total number of ingredients remaining in stock with the
 	// specified effect.
-	int calculateTotalIngredientsRemainingWithEffect
-		(const StatusEffect& effect);
+	unsigned int calculateTotalIngredientsRemainingWithEffect
+		(const StatusEffect& effect) const;
 
 	// Returns all ingredients known to have the specified status effect
 	const std::vector<Ingredient>& getIngredientsWithEffect
-		(const StatusEffect& effect);
+		(const StatusEffect& effect) const;
 	
 	// Returns true if an ingredient is known to express the status effect.
 	bool ingredientHasEffect
 		(const Ingredient& ingredient, const StatusEffect& effect) const;
 
-#pragma mark -
+//------------------------------------------------------------------------------
+//                            Combining Ingredients
+//------------------------------------------------------------------------------
 
 	// Uses two or three ingredients to 'brew a potion' adding value to the 
 	// inventory, and learning new status effects repeated in the ingredients
@@ -100,21 +124,11 @@ public:
 	Discovery combine
 		(const Ingredient& i1, const Ingredient& i2, const Ingredient& i3);
 
+//------------------------------------------------------------------------------
+//                              Private methods
+//------------------------------------------------------------------------------
+
 private:
-	// The combined value of all the brewed potions.
-	double _inventoryValue;
-	
-	// Keep a count of total ingredients in the store.
-	int _totalIngredientsRemaining;
-	
-	// Keep a count of combinations that gained nothing.
-	int _worthlessPotionCount;
-
-	// Holds the quantity of each ingredient.
-	std::map<Ingredient, unsigned int> _ingredientStore;
-
-	// Sorts ingredients by their discovered effects
-	std::map<StatusEffect, std::vector<Ingredient> > _effectsReference;
 	
 	// Note that an ingredient expresses a particular status effect.
 	void learnIngredientEffect

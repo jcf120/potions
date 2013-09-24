@@ -15,7 +15,7 @@ using namespace std;
 //------------------------------------------------------------------------------
 // Default Constructor
 Discovery::Discovery() :
-_count(0)
+count(0)
 {
 }
 
@@ -23,7 +23,7 @@ _count(0)
 // Returns the number of findings
 int Discovery::findingsCount() const
 {
-	return _count;
+	return this->count;
 }
 
 //------------------------------------------------------------------------------
@@ -31,14 +31,14 @@ int Discovery::findingsCount() const
 void Discovery::addFinding
 	(const Ingredient & ingredient, const StatusEffect & effect)
 {
-	if (_count == MAX_FINDINGS)
+	if (this->count == MAX_FINDINGS)
 		throw range_error("Attempted to add to a Discovery that was "
 			"already full.");
 	
 	// Store the values
-	_ingredients[_count] = ingredient;
-	_effects[_count] = effect;
-	_count++;
+	this->ingredients[this->count] = ingredient;
+	this->effects[this->count] = effect;
+	this->count++;
 }
 
 //------------------------------------------------------------------------------
@@ -46,12 +46,12 @@ void Discovery::addFinding
 const Ingredient & Discovery::getIngredient(const int index) const
 {
 	// Check range is valid
-	if (index < 0 || index >= _count)
+	if (index < 0 || index >= this->count)
 		throw out_of_range("Attempted to access an ingredient outside a "
 			"Discovery's range.");
 	
 	// Fetch the value
-	return _ingredients[index];
+	return this->ingredients[index];
 }
 
 //------------------------------------------------------------------------------
@@ -59,10 +59,10 @@ const Ingredient & Discovery::getIngredient(const int index) const
 const StatusEffect & Discovery::getEffect(const int index) const
 {
 	// Check range is valid
-	if (index < 0 || index >= _count)
+	if (index < 0 || index >= this->count)
 		throw out_of_range("Attempted to access a status effect outside a "
 			"Discovery's range.");
 	
 	// Fetch the value
-	return _effects[index];
+	return this->effects[index];
 }

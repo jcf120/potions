@@ -20,6 +20,12 @@
 
 class Discovery
 {
+	// The number of findings
+	int count;
+	// Storing the findings
+	Ingredient ingredients[MAX_FINDINGS];
+	StatusEffect effects[MAX_FINDINGS];
+	
 public:
 	// Default Constructor - initialises the container empty.
 	Discovery();
@@ -36,11 +42,4 @@ public:
 	// Finding accessors
 	const Ingredient& getIngredient(const int index) const;
 	const StatusEffect& getEffect(const int index) const;
-	
-private:
-	// The number of findings
-	int _count;
-	// Storing the findings
-	Ingredient _ingredients[MAX_FINDINGS];
-	StatusEffect _effects[MAX_FINDINGS];
 };

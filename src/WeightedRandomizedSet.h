@@ -24,6 +24,20 @@
 
 template<class T> class WeightedRandomizedSet
 {
+	// Holds the set's values
+	std::vector<T> values;
+	
+	// The set's random number generator and distribution
+	std::default_random_engine generator;
+    std::uniform_real_distribution<double> distribution;
+	
+	// The cumulative probabilities with indices corresponding to their
+	// represented values.
+	std::vector<double> probabilitySpace;
+	
+	// The sum of all elements' weightings
+	double probabilitySpaceSize;
+	
 public:
 	
 	// Initializes an empty WeightedRandomizedSet.
@@ -42,31 +56,16 @@ public:
 	// Throws logic_error if the set is empty.
 	const T& retrieve();
 	
-private:
-	
-	// Holds the set's values
-	std::vector<T> _values;
-	
-	// The set's random number device, generator and distribution
-	std::default_random_engine _gen;
-    std::uniform_real_distribution<double> _dis;
-	
-	// The cumulative probabilities with indices corresponding to their
-	// represented values.
-	std::vector<double> _probabilitySpace;
-	
-	// The sum of all elements' weightings
-	double _probabilitySpaceSize;
 };
 
 //------------------------------------------------------------------------------
 // Default constructor
 template <class T>
 WeightedRandomizedSet<T>::WeightedRandomizedSet() :
-_probabilitySpace(0)
+probabilitySpace(0)
 {
 	// Build the probability distribution
-    _dis = std::uniform_real_distribution<double>(0.0, 1.0);
+    distribution = std::uniform_real_distribution<double>(0.0, 1.0);
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +73,7 @@ _probabilitySpace(0)
 template <class T>
 bool WeightedRandomizedSet<T>::isEmpty() const
 {
-	return _values.empty();
+	return this->values.empty();
 }
 
 //------------------------------------------------------------------------------
@@ -82,7 +81,7 @@ bool WeightedRandomizedSet<T>::isEmpty() const
 template <class T>
 int WeightedRandomizedSet<T>::size() const
 {
-	return _values.size();
+	return this->values.size();
 }
 
 //------------------------------------------------------------------------------
@@ -91,13 +90,13 @@ template <class T>
 void WeightedRandomizedSet<T>::add(const T & item, const double weighting)
 {	
 	// Store the item
-	_values.push_back(item);
+	this->values.push_back(item);
 	
 	// Increase the size of probability space
-	_probabilitySpaceSize += weighting;
+	this->probabilitySpaceSize += weighting;
 	
 	// Push this value to the map of probability space
-	_probabilitySpace.push_back(_probabilitySpaceSize);
+	this->probabilitySpace.push_back(this->probabilitySpaceSize);
 }
 
 //------------------------------------------------------------------------------
@@ -112,15 +111,16 @@ const T& WeightedRandomizedSet<T>::retrieve()
 			"WeightedRandomizedSet");
 			
 	// Select a random number within probability space
-	double f = _dis(_gen) * _probabilitySpaceSize;
+	double randSample = this->distribution(this->generator);
+	randSample *= this->probabilitySpaceSize;
 	
 	// Find the index of the first element greater than this value in
 	// probability space. Worst case linear - binary search would be better.
 	int index = 0;
-	std::vector<double>::const_iterator i = _probabilitySpace.begin();
+	std::vector<double>::const_iterator i = this->probabilitySpace.begin();
 	// Increase the index until we reach the end or f is greater.
-	while (i != _probabilitySpace.end() && *(i++) < f) index++;
+	while (i != this->probabilitySpace.end() && *(i++) < randSample) index++;
 	
 	// Return the index's corresponding value
-	return _values[index];
+	return this->values[index];
 }

@@ -19,10 +19,25 @@
 
 class Ingredient
 {
+	// Used for sorting in containers
+	unsigned int id;
+	
+	// The potential status effects of the ingredient when combined with others.
+	StatusEffect effects[INGREDIENT_EFFECTS_COUNT];
+	
+	// Only used by static method - newIngredient()
+	Ingredient(const unsigned int id,
+			   const StatusEffect& se0,
+			   const StatusEffect& se1,
+			   const StatusEffect& se2,
+			   const StatusEffect& se3);
+
 public:
 	// Default constructor - creates invalid id, only used by containers.
 	Ingredient();
 	static const Ingredient nullValue;
+	
+	Ingredient& operator=(const Ingredient& rhs);
 	
 	// Status effects are readonly, and accessed via the subscript operator.
 	const StatusEffect& operator[](const int i) const;
@@ -34,33 +49,22 @@ public:
 	// Returns the average rarity of the ingredient's status effects.
 	double calculateRarity() const;
 	
-	// Construct via static method so each Ingredient has a unique id.
-	// Status effects are assigned randomly according to rarity.
-	static Ingredient newIngredient();
-	
-	// Assignment operator
-	Ingredient& operator=(const Ingredient& rhs);
-	
 	// Comparison operator used for list and map sorting via ids.
 	bool operator==(const Ingredient& rhs) const;
 	
 	// Relational operator used for list and map sorting via ids.
 	bool operator<(const Ingredient& rhs) const;
+	
+//------------------------------------------------------------------------------
+//                                  Statics
+//------------------------------------------------------------------------------
 
+	// Construct via static method so each Ingredient has a unique id.
+	// Status effects are assigned randomly according to rarity.
+	static Ingredient newIngredient();
+	
 private:
-	// Used for sorting in containers
-	unsigned int _id;
-	
-	// The potential status effects of the ingredient when combined with others.
-	StatusEffect _effects[INGREDIENT_EFFECTS_COUNT];
-	
-	Ingredient(const unsigned int id,
-			   const StatusEffect& se0,
-			   const StatusEffect& se1,
-			   const StatusEffect& se2,
-			   const StatusEffect& se3);
-	
 	// Used for assigning unique ids.
-	static unsigned int s_nextId;
+	static unsigned int sNextId;
 };
 

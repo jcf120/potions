@@ -63,24 +63,38 @@ int main(int argc, char* argv[])
 	
 	// See what we earn from random mixing
 	Instructor::randomlyCombineRemainingPairs(alchemistA);
-	cout << "Approach A" << endl
-		 << "Inventory Value: " << alchemistA.inventoryValue() << endl
-		 << "Worthless Potions: " << alchemistA.worthlessPotionCount() << endl
-		 << "Varieties Remaining: " << alchemistA.calculateVarietiesInStock()
+	cout << "Approach A"
 		 << endl
-		 << "Ingredients Remaining: " << alchemistA.totalIngredientsRemaining()
-		 << endl;
+		 << "Inventory Value: "
+		 << alchemistA.getInventoryValue()
+		 << endl
+		 << "Worthless Potions: "
+		 << alchemistA.getWorthlessPotionCount()
+		 << endl
+		 << "Varieties Remaining: "
+		 << alchemistA.calculateVarietiesInStock()
+		 << endl
+		 << "Ingredients Remaining: "
+		 << alchemistA.getTotalIngredientsRemaining()
+		 << endl << endl;
 	
 	// See what we earn from mixing matching effects
 	Instructor::combineAllPairsWithMatchingEffects(alchemistB);
 	Instructor::randomlyCombineRemainingPairs(alchemistB);
-	cout << "Approach B" << endl
-		 << "Inventory Value: " << alchemistB.inventoryValue() << endl
-		 << "Worthless Potions: " << alchemistB.worthlessPotionCount() << endl
-		 << "Varieties Remaining: " << alchemistB.calculateVarietiesInStock()
+	cout << "Approach B"
 		 << endl
-		 << "Ingredients Remaining: " << alchemistB.totalIngredientsRemaining()
-		 << endl;
+		 << "Inventory Value: "
+		 << alchemistB.getInventoryValue()
+		 << endl
+		 << "Worthless Potions: "
+		 << alchemistB.getWorthlessPotionCount()
+		 << endl
+		 << "Varieties Remaining: "
+		 << alchemistB.calculateVarietiesInStock()
+		 << endl
+		 << "Ingredients Remaining: "
+		 << alchemistB.getTotalIngredientsRemaining()
+		 << endl << endl;
 	
 	return 0;
 }

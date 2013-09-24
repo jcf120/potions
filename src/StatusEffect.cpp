@@ -14,52 +14,48 @@ using namespace std;
 //------------------------------------------------------------------------------
 // Initialize static members
 const StatusEffect StatusEffect::nullValue = StatusEffect();
-unsigned int StatusEffect::s_nextId = 1; // 0 is reserved for invalid effects.
-WeightedRandomizedSet<StatusEffect> StatusEffect::s_existingEffects =
+unsigned int StatusEffect::sNextId = 1; // 0 is reserved for invalid effects.
+WeightedRandomizedSet<StatusEffect> StatusEffect::sExistingEffects =
 	WeightedRandomizedSet<StatusEffect>();
 
 //------------------------------------------------------------------------------
 // Default constructor - only used by containers and represents an invalid.
 StatusEffect::StatusEffect() :
-_id(0), _rarity(0)
+id(0), rarity(0)
 {
 }
 
 //------------------------------------------------------------------------------
 // Constructor - private, only used by static newStatusEffect method.
-StatusEffect::StatusEffect(const unsigned int id, const double effectRarity) :
-	_id(id), _rarity(effectRarity)
+StatusEffect::StatusEffect(const unsigned int id, const double rarity) :
+	id(id), rarity(rarity)
 {
 }
 
 //------------------------------------------------------------------------------
-// Copy constructor
 StatusEffect::StatusEffect(const StatusEffect& rhs) :
-	_id(rhs._id), _rarity(rhs._rarity)
+	id(rhs.id), rarity(rhs.rarity)
 {
 }
 
 //------------------------------------------------------------------------------
-// Assignment operator
 StatusEffect& StatusEffect::operator=(const StatusEffect& rhs)
 {
-	_id = rhs._id;
-	_rarity = rhs._rarity;
+	this->id = rhs.id;
+	this->rarity = rhs.rarity;
 	return *this;
 }
 
 //------------------------------------------------------------------------------
-// Rarity accessor
-double StatusEffect::rarity() const
+double StatusEffect::getRarity() const
 {
-	return _rarity;
+	return this->rarity;
 }
 
 //------------------------------------------------------------------------------
-// Comparison operators
 bool StatusEffect::operator==(const StatusEffect& rhs) const
 {
-	return _id == rhs._id;
+	return this->id == rhs.id;
 }
 
 bool StatusEffect::operator!=(const StatusEffect& rhs) const
@@ -71,18 +67,24 @@ bool StatusEffect::operator!=(const StatusEffect& rhs) const
 // Relational operator
 bool StatusEffect::operator<(const StatusEffect& rhs) const
 {
-	return _id < rhs._id;
+	return this->id < rhs.id;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//                              Static methods
+//
+////////////////////////////////////////////////////////////////////////////////	
 
 //------------------------------------------------------------------------------
 // Static Method - build and store a new unique StatusEffect
 StatusEffect StatusEffect::newStatusEffect(const double rarity)
 {
 	// Initialize with a unique id
-	const StatusEffect statusEffect = StatusEffect(s_nextId++, rarity);
+	const StatusEffect statusEffect = StatusEffect(sNextId++, rarity);
 	
 	// Store it in the weighted set, with rarity's reciprocal as probability.
-	s_existingEffects.add(statusEffect, 1.0 / rarity);
+	sExistingEffects.add(statusEffect, 1.0 / rarity);
 	
 	// Return the new effect
 	return statusEffect;
@@ -93,15 +95,15 @@ StatusEffect StatusEffect::newStatusEffect(const double rarity)
 const StatusEffect& StatusEffect::randomStatusEffect()
 {
 	// Check any StatusEffect actually exist.
-	if (s_existingEffects.isEmpty())
+	if (sExistingEffects.isEmpty())
 		logic_error("No StatusEffects exist from which to select.");
 	
-	return s_existingEffects.retrieve();
+	return sExistingEffects.retrieve();
 }
 
 //------------------------------------------------------------------------------
 // Static method - total StatusEffects in existence
 int StatusEffect::total()
 {
-	return s_existingEffects.size();
+	return sExistingEffects.size();
 }
