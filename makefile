@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-std=c++11 -c
+CFLAGS=-std=c++11 -c -Wall -Werror
 OBJS=main.o Instructor.o Alchemist.o Discovery.o Ingredient.o StatusEffect.o
 OBJ_DIR=obj/
 SRC_DIR=src/
