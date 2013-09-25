@@ -15,15 +15,14 @@
 #pragma once
 #include "StatusEffect.h"
 
-#define INGREDIENT_EFFECTS_COUNT 4
-
 class Ingredient
 {
 	// Used for sorting in containers
 	unsigned int id;
 	
 	// The potential status effects of the ingredient when combined with others.
-	StatusEffect effects[INGREDIENT_EFFECTS_COUNT];
+	static const int sMaxEffects = 4;
+	StatusEffect effects[sMaxEffects];
 	
 	// Only used by static method - newIngredient()
 	Ingredient(const unsigned int id,

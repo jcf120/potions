@@ -40,7 +40,7 @@ id(id), effects{se0, se1, se2, se3}
 Ingredient& Ingredient::operator=(const Ingredient& rhs)
 {
 	id = rhs.id;
-	for (int i = 0; i < INGREDIENT_EFFECTS_COUNT; i++)
+	for (int i = 0; i < sMaxEffects; i++)
 		this->effects[i] = rhs.effects[i];
 	return *this;
 }
@@ -50,7 +50,7 @@ Ingredient& Ingredient::operator=(const Ingredient& rhs)
 const StatusEffect& Ingredient::operator[](const int i) const
 {
 	// Check bounds
-	if (i < 0 || i >= INGREDIENT_EFFECTS_COUNT)
+	if (i < 0 || i >= sMaxEffects)
 		throw out_of_range("Attempted to access StatusEffect outside "
 			"Ingredient's range.");
 	return this->effects[i];
@@ -65,7 +65,7 @@ const StatusEffect* Ingredient::begin() const
 	
 const StatusEffect* Ingredient::end() const
 {
-	return this->effects + INGREDIENT_EFFECTS_COUNT;
+	return this->effects + sMaxEffects;
 }
 
 //------------------------------------------------------------------------------
@@ -73,9 +73,9 @@ const StatusEffect* Ingredient::end() const
 double Ingredient::calculateRarity() const
 {
 	double average = 0.0;
-	for (int i = 0; i < INGREDIENT_EFFECTS_COUNT; i++)
-		average += this->effects[3].getRarity();
-	return average / INGREDIENT_EFFECTS_COUNT;
+	for (int i = 0; i < sMaxEffects; i++)
+		average += this->effects[i].getRarity();
+	return average / sMaxEffects;
 }
 
 //------------------------------------------------------------------------------
