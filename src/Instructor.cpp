@@ -3,12 +3,14 @@
  * File:        Instructor.h
  * Author:      Jocelyn Clifford-Frith
  * Date:        10th September 2013
- * Standard:    C++11 (auto types and range-based loops)
+ * Standard:    C++11 (<random>, auto types and range-based loops)
  ******************************************************************************/
  
 #include "Instructor.h"
 #include <vector>
 #include <iostream>
+#include <random>
+#include <ctime>
 
 using namespace std;
 
@@ -17,18 +19,22 @@ void Instructor::randomlyCombineRemainingPairs(Alchemist & alchemist)
 	// Make a local copy of the known ingredients
 	vector<Ingredient> ingredients = alchemist.allKnownIngredients();
 	
+	// Setup random distribution
+	default_random_engine randGen(time(0));
+	uniform_int_distribution<int> randDist(0, ingredients.size() - 1);
+	
 	// Combine pairs of ingredients at random until no distinct pairs remain.
 	while (alchemist.calculateVarietiesInStock() > 1)
 	{
 		// Choose two different ingredients that are in stock
-		Ingredient i1, i2;
-		while (!alchemist.hasIngredient(i1))
-			i1 = ingredients[ingredients.size() * rand() / RAND_MAX];
-		while (!alchemist.hasIngredient(i2) || i1 == i2)
-			i2 = ingredients[ingredients.size() * rand() / RAND_MAX];
+		Ingredient ingr1, ingr2;
+		while (!alchemist.hasIngredient(ingr1))
+			ingr1 = ingredients[randDist(randGen)];
+		while (!alchemist.hasIngredient(ingr2) || ingr1 == ingr2)
+			ingr2 = ingredients[randDist(randGen)];
 		
 		// Combine them
-		alchemist.combine(i1, i2);
+		alchemist.combine(ingr1, ingr2);
 	}
 }
 
