@@ -7,19 +7,16 @@
  *
  * This template class maintains a collection of generic objects, which can be
  * retrieved with a likelihood determined by the weighting used at the time 
- * adding the item to the collection. The WeightedRandomizedStack achieves this 
- * by recording each cumulative weighting in ascending order as items are added.
- * The index of each stored cumulative weighting is equal to the index of the 
- * added item. To retrieve an item, the WeightedRandomizedStack chooses a random
+ * adding the item to the collection. An  item is retrieved by choosing a random
  * number between 0 and the total weighting, and traverses the cumulative
- * weightings until one is found that is greater than the random value. The item
- * for the corresponding index is then returned.
+ * weightings until one is found that is greater than the random value.
  ******************************************************************************/
 
 #pragma once
 #include <vector>
 #include <stdexcept>
 #include <random>
+#include <ctime>
 
 
 template<class T> class WeightedRandomizedStack
@@ -72,6 +69,7 @@ WeightedRandomizedStack<T>::WeightedRandomizedStack() :
 probabilitySpaceSize(0.0)
 {
 	// Build the probability distribution
+	generator = std::default_random_engine(time(0));
     distribution = std::uniform_real_distribution<double>(0.0, 1.0);
 }
 
