@@ -26,18 +26,25 @@ int main(int argc, char* argv[])
 	srand(time(0));
 	
 	// Read in status effects from file
-	const char* filename = argv[1];
-	ifstream file(filename);
-	if (file.is_open())
+	bool readFailed = false;
+	if (argc > 1)
 	{
-		while (file.good())
+		const char* filename = argv[1];
+		ifstream file(filename);
+		if (file.is_open())
 		{
-			double rarity;
-			file >> rarity;
-			StatusEffect::newStatusEffect(rarity);
+			while (file.good())
+			{
+				double rarity;
+				file >> rarity;
+				StatusEffect::newStatusEffect(rarity);
+			}
 		}
+		else readFailed = true;
 	}
-	else // failure to open file - use default effect rarities
+	else readFailed = true;
+	
+	if (readFailed)
 	{
 		cout << "Couldn't open effects file, Using default values" << endl;
 		for (int i = 0; i < 20; i++)
