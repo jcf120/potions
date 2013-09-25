@@ -204,21 +204,21 @@ bool Alchemist::ingredientHasEffect
 //------------------------------------------------------------------------------
 // Combine ingredients - increase inventory value and record common effects
 Discovery Alchemist::combine
-	(const Ingredient& i1, const Ingredient& i2)
+	(const Ingredient& ingredient1, const Ingredient& ingredient2)
 {
 	// Are both ingredients in stock?
-	if (!hasIngredient(i1) || !hasIngredient(i2))
+	if (!hasIngredient(ingredient1) || !hasIngredient(ingredient2))
 		throw logic_error("Alchemist attempted to combine ingredients that "
 			"weren't in stock.");
 	
 	// Make sure the two ingredients are different.
-	if (i1 == i2)
-		throw invalid_argument("Alchemist::combine() - i1 and i2 cannot share "
-			"the same value");
+	if (ingredient1 == ingredient2)
+		throw invalid_argument("Alchemist::combine() - ingredient1 and "
+			"ingredient2 cannot share the same value");
 	
 	// Remove one of each ingredient from the store
-	this->ingredientStore[i1]--;
-	this->ingredientStore[i2]--;
+	this->ingredientStore[ingredient1]--;
+	this->ingredientStore[ingredient2]--;
 	this->totalIngredientsRemaining -= 2;
 	
 	// Findings from this combination will be returned with this object.
@@ -229,26 +229,26 @@ Discovery Alchemist::combine
 	const StatusEffect* pRarestEffect = nullptr;
 	
 	// Loop over all possible effect combinations and check for matches.
-	for (const StatusEffect& e1 : i1)
-		for (const StatusEffect& e2 : i2)
-			if (e1 == e2)
+	for (const StatusEffect& eff1 : ingredient1)
+		for (const StatusEffect& eff2 : ingredient2)
+			if (eff1 == eff2)
 			{
 				// Note the match if none were previously found.
 				if (!pRarestEffect)
-					pRarestEffect = &e1;
+					pRarestEffect = &eff1;
 				// Else, note the match if the effect's rarer than the last.
-				else if (pRarestEffect->getRarity() < e1.getRarity())
-					pRarestEffect = &e1;
+				else if (pRarestEffect->getRarity() < eff1.getRarity())
+					pRarestEffect = &eff1;
 				
 				// Check if the effects have already been discovered, and learn 
 				// them if not. Note anything learned in the returned Discovery.
-				if (!ingredientHasEffect(i1, e1)) {
-					learnIngredientEffect(i1, e1);
-					discovery.addFinding(i1, e1);
+				if (!ingredientHasEffect(ingredient1, eff1)) {
+					learnIngredientEffect(ingredient1, eff1);
+					discovery.addFinding(ingredient1, eff1);
 				}
-				if (!ingredientHasEffect(i2, e2)) {
-					learnIngredientEffect(i2, e2);
-					discovery.addFinding(i2, e2);
+				if (!ingredientHasEffect(ingredient2, eff2)) {
+					learnIngredientEffect(ingredient2, eff2);
+					discovery.addFinding(ingredient2, eff2);
 				}
 			}
 			
@@ -284,7 +284,7 @@ void Alchemist::learnIngredientEffect
 	auto iStore = this->ingredientStore.find(ingredient);
 	if (iStore == this->ingredientStore.end())
 		throw logic_error("Alchemist attempted to learn the effect of an "
-			"ingredients that it's new encountered before.");
+			"ingredient that it's encountered before.");
 	
 	// Look for the status effect in the effectsRefence.
 	auto iRef = this->effectsReference.find(effect); // effect-vec pair iterator
