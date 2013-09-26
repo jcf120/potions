@@ -27,6 +27,12 @@ template<class T> class WeightedRandomizedStack
 		double weighting;
 		
 		Choice(const T& v, const double w) : value(v), weighting(w) {}
+		/*Choice& operator= (const Choice& rhs)
+		{
+			this->value = rhs.value;
+			this->weighting =rhs.weighting;
+			return *this;
+		}*/
 	};
 	
 	// Holds the stack's values and weightings
@@ -36,8 +42,7 @@ template<class T> class WeightedRandomizedStack
 	double probabilitySpaceSize;
 	
 	// The set's random number generator and distribution
-	std::default_random_engine generator;
-    std::uniform_real_distribution<double> distribution;
+	static std::default_random_engine sGenerator;
 	
 public:
 	
@@ -55,7 +60,7 @@ public:
 	
 	// Retrieves an item with a probability according to it's weighting.
 	// Throws logic_error if the set is empty.
-	const T& pop();
+	T pop();
 	
 	// As above, but without removing it from the stack.
 	const T& peak();
@@ -63,18 +68,20 @@ public:
 };
 
 //------------------------------------------------------------------------------
-// Default constructor
+// Initialize static members
+template <class T>
+std::default_random_engine WeightedRandomizedStack<T>::sGenerator =
+	std::default_random_engine(time(0));
+
+//------------------------------------------------------------------------------
 template <class T>
 WeightedRandomizedStack<T>::WeightedRandomizedStack() :
 probabilitySpaceSize(0.0)
 {
-	// Build the probability distribution
-	generator = std::default_random_engine(time(0));
-    distribution = std::uniform_real_distribution<double>(0.0, 1.0);
 }
 
 //------------------------------------------------------------------------------
-// Check whether set is empty.
+// Check whether stack is empty.
 template <class T>
 bool WeightedRandomizedStack<T>::isEmpty() const
 {
@@ -103,7 +110,7 @@ void WeightedRandomizedStack<T>::push(const T & item, const double weighting)
 // Returns an item with a probability according to its recorded weighting.
 // non-const because of random mechanism
 template <class T>
-const T& WeightedRandomizedStack<T>::pop()
+T WeightedRandomizedStack<T>::pop()
 {
 	// Check there's an item to return.
 	if (isEmpty())
@@ -111,22 +118,26 @@ const T& WeightedRandomizedStack<T>::pop()
 			"WeightedRandomizedStack");
 			
 	// Select a random number within probability space
-	const double randSample = this->distribution(this->generator)
+	std::uniform_real_distribution<double> distribution(0.0, 1.0);
+	const double randSample = distribution(sGenerator)
 							  * this->probabilitySpaceSize;
 	
 	// Find the index of the first element greater than this value in
 	// cumulative probability space.
 	double cumulativeProbabiltySpace = 0.0;
-	for (auto it = choices.begin(); it != choices.end(); ++it)
+	for (typename std::vector<Choice>::iterator it = this->choices.begin();
+		 it != choices.end(); ++it)
 	{
 		cumulativeProbabiltySpace += it->weighting;
 		if (randSample < cumulativeProbabiltySpace)
 		{
 			T value = it->value;
+			this->probabilitySpaceSize -= it->weighting;
 			
 			// Move the last choice in place of the popped choice and shrink
 			// the choices vector.
-			*it = choices.pop_back();
+			*it = this->choices.back();
+			this->choices.pop_back();
 			
 			return value;
 		}
@@ -148,7 +159,8 @@ const T& WeightedRandomizedStack<T>::peak()
 			"WeightedRandomizedStack");
 			
 	// Select a random number within probability space
-	const double randSample = this->distribution(this->generator)
+	std::uniform_real_distribution<double> distribution(0.0, 1.0);
+	const double randSample = distribution(sGenerator)
 							  * this->probabilitySpaceSize;
 	
 	// Find the index of the first element greater than this value in
