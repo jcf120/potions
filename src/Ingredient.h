@@ -22,14 +22,11 @@ class Ingredient
 	
 	// The potential status effects of the ingredient when combined with others.
 	static const int sMaxEffects = 4;
-	StatusEffect effects[sMaxEffects];
+	std::vector<StatusEffect> effects;
 	
 	// Only used by static method - newIngredient()
 	Ingredient(const unsigned int id,
-			   const StatusEffect& se0,
-			   const StatusEffect& se1,
-			   const StatusEffect& se2,
-			   const StatusEffect& se3);
+			   const std::vector<StatusEffect>& effects);
 
 public:
 	// Default constructor - creates invalid id, only used by containers.
@@ -42,8 +39,8 @@ public:
 	const StatusEffect& operator[](const int i) const;
 	
 	// Also accessible via iterators (to allow range-based loops)
-	const StatusEffect* begin() const;
-	const StatusEffect* end() const;
+	std::vector<StatusEffect>::const_iterator begin() const;
+	std::vector<StatusEffect>::const_iterator end() const;
 	
 	// Returns the average rarity of the ingredient's status effects.
 	double calculateRarity() const;

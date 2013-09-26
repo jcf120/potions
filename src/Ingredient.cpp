@@ -20,18 +20,15 @@ unsigned int Ingredient::sNextId = 1; // 0 is reserved for invalids.
 //------------------------------------------------------------------------------
 // Default constructor - initializes with invalid id. Only used by containers.
 Ingredient::Ingredient() :
-id(0)
+id(0), effects(sMaxEffects)
 {
 }
 
 //------------------------------------------------------------------------------
 // Private constructor - assign all constant members.
 Ingredient::Ingredient(const unsigned int id,
-					   const StatusEffect& se0,
-					   const StatusEffect& se1,
-					   const StatusEffect& se2,
-					   const StatusEffect& se3) :
-id(id), effects{se0, se1, se2, se3}
+					   const vector<StatusEffect>& effects) :
+id(id), effects(effects)
 {
 }
 
@@ -49,23 +46,19 @@ Ingredient& Ingredient::operator=(const Ingredient& rhs)
 // Subscript operator - StatusEffects are readonly
 const StatusEffect& Ingredient::operator[](const int i) const
 {
-	// Check bounds
-	if (i < 0 || i >= sMaxEffects)
-		throw out_of_range("Attempted to access StatusEffect outside "
-			"Ingredient's range.");
 	return this->effects[i];
 }
 
 //------------------------------------------------------------------------------
 // Iterators - enabling c++11 range-based loops
-const StatusEffect* Ingredient::begin() const
+vector<StatusEffect>::const_iterator Ingredient::begin() const
 {
-	return this->effects;
+	return this->effects.begin();
 }
 	
-const StatusEffect* Ingredient::end() const
+vector<StatusEffect>::const_iterator  Ingredient::end() const
 {
-	return this->effects + sMaxEffects;
+	return this->effects.end();
 }
 
 //------------------------------------------------------------------------------
@@ -97,24 +90,18 @@ bool Ingredient::operator<(const Ingredient& rhs) const
 Ingredient Ingredient::newIngredient()
 {
 	// Can only make a new ingredient if at least 4 status effects exist
-	if (StatusEffect::total() < 4)
+	if (StatusEffect::total() < sMaxEffects)
 		throw logic_error("Cannot discover new ingredient because less "
-			"than 4 status effects exist to choose from");
+			"than sMaxEffects status effects exist to choose from");
 	
-	// Select random status effects and check we don't reuse the same one.
-	StatusEffect e1 = StatusEffect::randomStatusEffect();
-	StatusEffect e2 = StatusEffect::randomStatusEffect();
-	StatusEffect e3 = StatusEffect::randomStatusEffect();
-	StatusEffect e4 = StatusEffect::randomStatusEffect();
+	// Copy the status effects stack and pop the required number
+	WeightedRandomizedStack<StatusEffect> existingEffects = 
+		StatusEffect::getExistingEffectsStack();
 	
-	// Reassign until all values are different.
-	while (e2 == e1)
-		e2 = StatusEffect::randomStatusEffect();
-	while (e3 == e1 || e3 == e2)
-		e3 = StatusEffect::randomStatusEffect();
-	while (e4 == e1 || e4 == e2 || e4 == e3)
-		e4 = StatusEffect::randomStatusEffect();
+	vector<StatusEffect> effects;
+	for (int i = 0; i < sMaxEffects; i++)
+		effects.push_back(existingEffects.pop());
 	
 	// Create a new ingredient from these effects and increment the next id.
-	return Ingredient(sNextId++, e1, e2, e3, e4);
+	return Ingredient(sNextId++, effects);
 }
