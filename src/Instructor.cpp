@@ -61,7 +61,7 @@ void Instructor::combineAllPairsWithMatchingEffects(Alchemist & alchemist)
 			
 			// Iterate across ingredients, combining those in stock.
 			auto i1 = ingredients.begin();
-			auto i2 = i1;
+			auto i2 = next(i1);
 			
 			while (i2 != ingredients.end() && i1 != ingredients.end())
 			{
