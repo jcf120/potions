@@ -55,6 +55,9 @@ public:
 	// Throws logic_error if no StatusEffects exist.
 	static const StatusEffect& randomStatusEffect();
 	
+	static WeightedRandomizedStack<StatusEffect>
+		getExistingEffectsStack();
+	
 	// Returns the current number of StatusEffects in existence.
 	static int total();
 	

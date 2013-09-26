@@ -101,6 +101,12 @@ const StatusEffect& StatusEffect::randomStatusEffect()
 	return sExistingEffects.peak();
 }
 
+WeightedRandomizedStack<StatusEffect>
+	StatusEffect::getExistingEffectsStack()
+{
+	return sExistingEffects;
+}
+
 //------------------------------------------------------------------------------
 // Static method - total StatusEffects in existence
 int StatusEffect::total()
